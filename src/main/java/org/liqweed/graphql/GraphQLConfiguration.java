@@ -39,6 +39,7 @@ public class GraphQLConfiguration {
                 .build();
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Bean
     GraphQLSchema graphQLSchema() {
         String sdl;
@@ -104,11 +105,11 @@ public class GraphQLConfiguration {
         return wiring.build();
     }
 
-    @Bean
-    @Primary
     /**
      * A mechanism to customize requests execution and inject authentication and environment data.
      */
+    @Bean
+    @Primary
     public GraphQLInvocation invocation() {
         GraphQL graphQL = graphQL();
         return (invocationData, webRequest) -> {
