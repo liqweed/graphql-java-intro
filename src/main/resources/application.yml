@@ -15,20 +15,6 @@ management:
       exposure:
         include: health,info,metrics
 
-#graphql:
-#  servlet:
-#    actuator-metrics: true
-#    mapping: /graphql
-#    enabled: true
-#    corsEnabled: true
-    # if you want to @ExceptionHandler annotation for custom GraphQLErrors
-#    exception-handlers-enabled: true
-
-#altair:
-#  enabled: true
-#  cdn:
-#    enabled: false
-
 #graphiql:
 #  enabled: true
 #  cdn:
