@@ -1,6 +1,7 @@
 package org.liqweed.graphql;
 
 import com.google.common.io.Resources;
+import graphql.ExecutionInput;
 import graphql.GraphQL;
 import graphql.execution.SubscriptionExecutionStrategy;
 import graphql.schema.GraphQLSchema;
@@ -8,10 +9,12 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.spring.web.servlet.GraphQLInvocation;
 import kotlin.text.Charsets;
 import org.liqweed.graphql.model.Person;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,16 +33,21 @@ public class GraphQLConfiguration {
     }
 
     @Bean
-    GraphQL graphQL() throws IOException {
+    GraphQL graphQL() {
         return GraphQL.newGraphQL(graphQLSchema())
                 .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
                 .build();
     }
 
     @Bean
-    GraphQLSchema graphQLSchema() throws IOException {
-        URL url = Resources.getResource("schema.graphqls");
-        String sdl = Resources.toString(url, Charsets.UTF_8);
+    GraphQLSchema graphQLSchema() {
+        String sdl;
+        try {
+            URL url = Resources.getResource("schema.graphqls");
+            sdl = Resources.toString(url, Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read GraphQL schema file", e);
+        }
         return buildSchema(sdl);
     }
 
@@ -94,5 +102,23 @@ public class GraphQLConfiguration {
                 }));
 
         return wiring.build();
+    }
+
+    @Bean
+    @Primary
+    /**
+     * A mechanism to customize requests execution and inject authentication and environment data.
+     */
+    public GraphQLInvocation invocation() {
+        GraphQL graphQL = graphQL();
+        return (invocationData, webRequest) -> {
+            ExecutionInput executionInput = ExecutionInput.newExecutionInput()
+                    .query(invocationData.getQuery())
+                    .operationName(invocationData.getOperationName())
+                    .variables(invocationData.getVariables())
+                    .context(builder -> builder.of("user", "authenticatedUser1"))
+                    .build();
+            return graphQL.executeAsync(executionInput);
+        };
     }
 }
