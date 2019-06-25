@@ -28,6 +28,7 @@ dependencies {
 
     // Embedded graphiql
     implementation("com.graphql-java-kickstart:graphiql-spring-boot-starter:5.9.0")
+    implementation("com.graphql-java-kickstart:voyager-spring-boot-starter:5.9.0")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
