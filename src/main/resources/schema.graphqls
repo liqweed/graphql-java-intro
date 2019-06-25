@@ -34,8 +34,8 @@ type Subscription {
 }
 
 type Movie {
-    id: ID
-    title: String
+    id: ID!
+    title: String!
     release: Int
     director: Director
     cast: [Actor!]
@@ -43,7 +43,7 @@ type Movie {
 }
 
 interface Person {
-    id: ID
+    id: ID!
     name: String
 }
 
@@ -57,14 +57,14 @@ type Role {
 
 # A person that acted in a movie
 type Actor implements Person {
-    id: ID
+    id: ID!
     name: String
     movies: [Movie!]
 }
 
 # A person that directed a movie
 type Director implements Person {
-    id: ID
+    id: ID!
     name: String
     directed: [Movie!]
 }
