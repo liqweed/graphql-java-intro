@@ -20,7 +20,7 @@ type Mutation {
     addMovie(title: String!, release: Int!): Movie!
 
     # Add a person to the database
-    addPerson(name: String!, born: Int): Person!
+    addPerson(name: String!): Person!
 
     # Set a director for a movie
     directorForMovie(title: String, name: String!): Movie!
@@ -66,7 +66,6 @@ type Actor implements Person {
 type Director implements Person {
     id: ID
     name: String
-    born: Int
     directed: [Movie!]
 }
 
